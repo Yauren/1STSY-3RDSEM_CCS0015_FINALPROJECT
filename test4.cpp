@@ -174,49 +174,65 @@ void DisplayTransactions() {
     if (tCount == 0) {
         cout << "||                No transactions yet.                      ||" << endl;
     } else {
+        int orderChoice;
+        cout << "|| Display Order:                                          ||" << endl;
+        cout << "||  1. Oldest to Newest                                    ||" << endl;
+        cout << "||  2. Newest to Oldest                                    ||" << endl;
+        cout << "=============================================================" << endl;
+        cout << "Enter choice (1 or 2): ";
+        cin >> orderChoice;
+        cin.ignore(); // Clear newline
+
         cout << "|| TID    | Firearm | Customer Name     | Qty |   Status   ||" << endl;
         cout << "||--------|---------|-------------------|-----|------------||" << endl;
-        for (int i = tFront; i <= tRear; ++i) {
-            cout << "|| ";
 
-           
-            cout.width(6);
-            cout << left << transactions[i].id << " | ";
-
-            
-            cout.width(7);
-            cout << left << transactions[i].firearmId << " | ";
-
-            // Customer Name (17 chars)
-            cout.width(17);
-            cout << left << transactions[i].customerName.substr(0, 17) << " | ";
-
-            // Quantity (3 chars)
-            cout.width(3);
-            cout << left << transactions[i].quantityRented << " | ";
-
-            // Status (10 chars)
-            std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-            std::chrono::duration<double> diff = now - transactions[i].timestamp;
-            long long elapsed = std::chrono::duration_cast<std::chrono::seconds>(diff).count();
-            string status = (elapsed >= 30) ? "Expired" : "Ongoing";
-            cout.width(11);
-            cout << left << status << "||" << endl;
-
-            // Return to inventory if expired and not yet returned
-            if (elapsed >= 30 && !transactions[i].returned) {
-                for (int k = front; k <= rear; ++k) {
-                    if (firearms[k].id == transactions[i].firearmId) {
-                        firearms[k].quantity += transactions[i].quantityRented;
-                        break;
+        if (orderChoice == 2) {
+            for (int i = tRear; i >= tFront; --i) {
+                cout << "|| ";
+                cout.width(6); cout << left << transactions[i].id << " | ";
+                cout.width(7); cout << left << transactions[i].firearmId << " | ";
+                cout.width(17); cout << left << transactions[i].customerName.substr(0, 17) << " | ";
+                cout.width(3); cout << left << transactions[i].quantityRented << " | ";
+                std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+                std::chrono::duration<double> diff = now - transactions[i].timestamp;
+                long long elapsed = std::chrono::duration_cast<std::chrono::seconds>(diff).count();
+                string status = (elapsed >= 30) ? "Expired" : "Ongoing";
+                cout.width(11); cout << left << status << "||" << endl;
+                if (elapsed >= 30 && !transactions[i].returned) {
+                    for (int k = front; k <= rear; ++k) {
+                        if (firearms[k].id == transactions[i].firearmId) {
+                            firearms[k].quantity += transactions[i].quantityRented;
+                            break;
+                        }
                     }
+                    transactions[i].returned = true;
                 }
-                transactions[i].returned = true;
+            }
+        } else {
+            for (int i = tFront; i <= tRear; ++i) {
+                cout << "|| ";
+                cout.width(6); cout << left << transactions[i].id << " | ";
+                cout.width(7); cout << left << transactions[i].firearmId << " | ";
+                cout.width(17); cout << left << transactions[i].customerName.substr(0, 17) << " | ";
+                cout.width(3); cout << left << transactions[i].quantityRented << " | ";
+                std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+                std::chrono::duration<double> diff = now - transactions[i].timestamp;
+                long long elapsed = std::chrono::duration_cast<std::chrono::seconds>(diff).count();
+                string status = (elapsed >= 30) ? "Expired" : "Ongoing";
+                cout.width(11); cout << left << status << "||" << endl;
+                if (elapsed >= 30 && !transactions[i].returned) {
+                    for (int k = front; k <= rear; ++k) {
+                        if (firearms[k].id == transactions[i].firearmId) {
+                            firearms[k].quantity += transactions[i].quantityRented;
+                            break;
+                        }
+                    }
+                    transactions[i].returned = true;
+                }
             }
         }
     }
     cout << "==============================================================" << endl;
     cout << "Press Enter to return to the main menu...";
-    cin.ignore();
     cin.get();
 }
