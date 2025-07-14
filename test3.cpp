@@ -76,6 +76,8 @@ void initializeFirearms() {
     firearms[++rear] = {"G17A", "Glock 17", "9mm Pistol", 5}; count++;
     firearms[++rear] = {"R870", "Remington 870", "12ga Shotgun", 3}; count++;
     firearms[++rear] = {"AR15", "AR-15", "5.56mm Rifle", 4}; count++;
+
+
 }
 
 void Menu(){
